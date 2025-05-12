@@ -1,5 +1,8 @@
+"use client";
+
 import { some } from "lodash";
 import Link from "next/link";
+import Image from "next/image"; // Import Image
 import { useDispatch, useSelector } from "react-redux";
 
 import type { RootState } from "@/store";
@@ -39,7 +42,13 @@ const ProductItem = ({
         </button>
 
         <Link href={`/product/${id}`}>
-          <img src={images ? images[0] : ""} alt="product" />
+          {/* Replace img with Image */}
+          <Image
+            src={images ? images[0] : ""}
+            alt="product"
+            width={200} // Placeholder width, adjust as needed
+            height={200} // Placeholder height, adjust as needed
+          />
           {discount && <span className="product__discount">{discount}%</span>}
         </Link>
       </div>

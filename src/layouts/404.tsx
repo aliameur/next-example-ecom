@@ -1,28 +1,23 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-
 import Header from "@/components/header";
+import React from 'react';
 
-type LayoutType = {
-  title?: string;
-  children?: React.ReactNode;
+export const metadata = {
+  title: 'Page not found',
 };
 
-const ErrorPage = ({ children, title = "Next.js Ecommerce" }: LayoutType) => {
-  const router = useRouter();
-  const pathname = router.pathname;
-
+const NotFoundPage = ({ children }: { children?: React.ReactNode }) => {
   return (
     <div className="app-main">
-      <Head>
-        <title>Page not found &mdash; {title}</title>
-      </Head>
-
       <Header isErrorPage />
-
-      <main className={pathname !== "/" ? "main-page" : ""}>{children}</main>
+      <main className="main-page">
+        <div className="container">
+          <h1>404 - Page Not Found</h1>
+          <p>Sorry, the page you are looking for does not exist.</p>
+          {children}
+        </div>
+      </main>
     </div>
   );
 };
 
-export default ErrorPage;
+export default NotFoundPage;
