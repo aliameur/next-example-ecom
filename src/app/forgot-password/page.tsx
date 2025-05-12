@@ -1,20 +1,25 @@
+'use client';
+
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { server } from "../utils/server";
-import { postData } from "../utils/services";
+import { server } from "@/utils/server";
+import { postData } from "@/utils/services";
 
 type ForgotMail = {
   email: string;
+  password?: string; // Keeping this as per original code structure, though logic seems off for 'forgot password'
 };
 
 const ForgotPassword = () => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm<ForgotMail>();
 
   const onSubmit = async (data: ForgotMail) => {
+    // Original code posts to /api/login with email only. Keeping as is.
     await postData(`${server}/api/login`, {
       email: data.email,
     });
+    // Additional logic like showing success message would go here
   };
 
   return (
@@ -22,8 +27,10 @@ const ForgotPassword = () => {
       <div className="container">
         <div className="back-button-section">
           <Link href="/products">
+
             <i className="icon-left" />
             Back to shop
+
           </Link>
         </div>
 
@@ -39,8 +46,7 @@ const ForgotPassword = () => {
                 className="form__input"
                 placeholder="email"
                 type="text"
-                name="email"
-                ref={register({
+                {...register("email", {
                   required: true,
                   pattern:
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -60,13 +66,13 @@ const ForgotPassword = () => {
               )}
             </div>
 
+            {/* Keeping password input as per original code, although unusual for 'forgot password' */}
             <div className="form__input-row">
               <input
                 className="form__input"
                 type="password"
                 placeholder="Password"
-                name="password"
-                ref={register({ required: true })}
+                {...register("password", { required: true })}
               />
               {errors.password && errors.password.type === "required" && (
                 <p className="message message--error">

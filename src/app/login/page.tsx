@@ -1,16 +1,19 @@
+'use client';
+
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import { server } from "../utils/server";
-import { postData } from "../utils/services";
+import { server } from "@/utils/server";
+import { postData } from "@/utils/services";
 
 type LoginMail = {
   email: string;
   password: string;
+  keepSigned?: boolean;
 };
 
-const LoginPage = () => {
-  const { register, handleSubmit, errors } = useForm();
+const Page = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginMail>();
 
   const onSubmit = async (data: LoginMail) => {
     await postData(`${server}/api/login`, {
@@ -43,8 +46,7 @@ const LoginPage = () => {
                 className="form__input"
                 placeholder="email"
                 type="text"
-                name="email"
-                ref={register({
+                {...register("email", {
                   required: true,
                   pattern:
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -67,8 +69,7 @@ const LoginPage = () => {
                 className="form__input"
                 type="password"
                 placeholder="Password"
-                name="password"
-                ref={register({ required: true })}
+                {...register("password", { required: true })}
               />
               {errors.password && errors.password.type === "required" && (
                 <p className="message message--error">This field is required</p>
@@ -83,9 +84,8 @@ const LoginPage = () => {
                 >
                   <input
                     type="checkbox"
-                    name="keepSigned"
                     id="check-signed-in"
-                    ref={register({ required: false })}
+                    {...register("keepSigned")}
                   />
                   <span className="checkbox__check" />
                   <p>Keep me signed in</p>
@@ -105,6 +105,7 @@ const LoginPage = () => {
                 Facebook
               </button>
               <button type="button" className="btn-social google-btn">
+                {/* Assuming the image path is correct from the public directory */}
                 <img src="/images/icons/gmail.svg" alt="gmail" /> Gmail
               </button>
             </div>
@@ -126,4 +127,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Page;
