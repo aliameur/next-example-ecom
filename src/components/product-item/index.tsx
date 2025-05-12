@@ -2,6 +2,7 @@
 
 import { some } from "lodash";
 import Link from "next/link";
+import Image from 'next/image'; // Added import
 import { useDispatch, useSelector } from "react-redux";
 
 import type { RootState } from "@/store";
@@ -41,7 +42,12 @@ const ProductItem = ({
         </button>
 
         <Link href={`/product/${id}`}>
-          <img src={images ? images[0] : ""} alt="product" />
+          {/*
+            NOTE: The width and height are placeholders.
+            Adjust these values according to the design requirements.
+            The src prop handles the case where 'images' is null/undefined or empty by providing an empty string.
+          */}
+          <Image src={images ? images[0] : ""} alt="product" width={100} height={100} /> {/* Replaced img with Image */}
           {discount && <span className="product__discount">{discount}%</span>}
         </Link>
       </div>

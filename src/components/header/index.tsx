@@ -1,14 +1,14 @@
 'use client';
 
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Changed from next/router
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import useOnClickOutside from "use-onclickoutside";
 
 import type { RootState } from "@/store";
 
-import Logo from "@/assets/icons/logo"; // Adjusted import path
+import Logo from "@/assets/icons/logo";
 
 type HeaderType = {
   isErrorPage?: boolean;
@@ -24,11 +24,6 @@ const Header = ({ isErrorPage }: HeaderType) => {
   // However, keeping the original logic's intent: check if the current path is one of the arrayPaths.
   // In App Router client components, usePathname is the equivalent.
   const arrayPaths = ["/"];
-  // Using a simplified check based on isErrorPage and the assumption that this component
-  // might be rendered in different places by the parent layout/page.
-  // A more robust check would use usePathname here if the component's behavior
-  // truly depends on the current route path in a client-side manner.
-  const isHomePageOrNotError = arrayPaths.includes(router.pathname) && !isErrorPage;
 
 
   const [onTop, setOnTop] = useState(
@@ -66,7 +61,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
     return () => {
       window.removeEventListener('scroll', headerClass); // Clean up event listener
     };
-  }, [router.pathname, isErrorPage]); // Added dependencies
+  }, [router.pathname, isErrorPage, arrayPaths]); // Added dependencies
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -83,7 +78,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
   return (
     <header className={`site-header ${!onTop ? "site-header--fixed" : ""}`}>
       <div className="container">
-        <Link href="/"> {/* Removed legacyBehavior */}
+        <Link href="/">
           <h1 className="site-logo">
             <Logo />
             E-Shop
@@ -93,7 +88,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
           ref={navRef}
           className={`site-nav ${menuOpen ? "site-nav--open" : ""}`}
         >
-          <Link href="/products">Products</Link> {/* Removed legacyBehavior */}
+          <Link href="/products">Products</Link>
           <a href="#">Inspiration</a>
           <a href="#">Rooms</a>
           <button className="site-nav__btn">
@@ -122,7 +117,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
               className="icon-search"
             />
           </button>
-          <Link href="/cart"> {/* Removed legacyBehavior */}
+          <Link href="/cart">
             <button className="btn-cart">
               <i className="icon-cart" />
               {cartItems.length > 0 && (
@@ -130,7 +125,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
               )}
             </button>
           </Link>
-          <Link href="/login"> {/* Removed legacyBehavior */}
+          <Link href="/login">
             <button className="site-header__btn-avatar">
               <i className="icon-avatar" />
             </button>
