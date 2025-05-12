@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import * as gtag from '../utils/gtag';
+import * as gtag from '@/utils/gtag'; // Use alias for src/utils
 
 interface GTagInitializerProps {
   isProduction: boolean;

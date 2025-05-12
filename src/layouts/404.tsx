@@ -1,28 +1,25 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-
 import Header from "@/components/header";
 
-type LayoutType = {
-  title?: string;
-  children?: React.ReactNode;
+export const metadata = {
+  title: 'Page not found',
 };
 
-const ErrorPage = ({ children, title = "Next.js Ecommerce" }: LayoutType) => {
-  const router = useRouter();
-  const pathname = router.pathname;
-
+const NotFoundPage = () => {
   return (
     <div className="app-main">
-      <Head>
-        <title>Page not found &mdash; {title}</title>
-      </Head>
-
       <Header isErrorPage />
-
-      <main className={pathname !== "/" ? "main-page" : ""}>{children}</main>
+      {/* The original component used children, which is not applicable to app router not-found.tsx.
+          The content that was likely passed as children is rendered directly here. */}
+      <main className="main-page"> {/* Removed conditional class based on pathname */}
+        <div className="container">
+          {/* Example content for a 404 page */}
+          <h1>404 - Page Not Found</h1>
+          <p>Sorry, the page you are looking for does not exist.</p>
+          {/* You might add a link back home here if desired */}
+        </div>
+      </main>
     </div>
   );
 };
 
-export default ErrorPage;
+export default NotFoundPage;
