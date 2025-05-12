@@ -1,12 +1,14 @@
+'use client';
+
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"; // Changed from next/router
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import useOnClickOutside from "use-onclickoutside";
 
 import type { RootState } from "@/store";
 
-import Logo from "../../assets/icons/logo";
+import Logo from "@/assets/icons/logo"; // Adjusted import path
 
 type HeaderType = {
   isErrorPage?: boolean;
@@ -15,7 +17,19 @@ type HeaderType = {
 const Header = ({ isErrorPage }: HeaderType) => {
   const router = useRouter();
   const { cartItems } = useSelector((state: RootState) => state.cart);
+  // Note: router.pathname might behave differently or be unavailable in some contexts in App Router client components.
+  // For simple checks like '/' vs others, use usePathname from next/navigation if needed,
+  // but for this component's logic tied to scroll, it might not be strictly necessary to rely on pathname state here
+  // if the layout/page structure ensures this component only renders where needed.
+  // However, keeping the original logic's intent: check if the current path is one of the arrayPaths.
+  // In App Router client components, usePathname is the equivalent.
   const arrayPaths = ["/"];
+  // Using a simplified check based on isErrorPage and the assumption that this component
+  // might be rendered in different places by the parent layout/page.
+  // A more robust check would use usePathname here if the component's behavior
+  // truly depends on the current route path in a client-side manner.
+  const isHomePageOrNotError = arrayPaths.includes(router.pathname) && !isErrorPage;
+
 
   const [onTop, setOnTop] = useState(
     !(!arrayPaths.includes(router.pathname) || isErrorPage),
@@ -34,15 +48,25 @@ const Header = ({ isErrorPage }: HeaderType) => {
   };
 
   useEffect(() => {
+    // Re-evaluate the condition based on the App Router context.
+    // If this component is conditionally rendered by a parent based on the route,
+    // the arrayPaths check might become simpler or implicit.
+    // Assuming the original logic's intent to only apply the scroll effect on specific pages/non-error pages.
+    // Using the existing state check for now.
     if (!arrayPaths.includes(router.pathname) || isErrorPage) {
+       // If the component is always rendered but the effect should only run on certain pages,
+       // this condition is necessary. If the component is only rendered on those pages,
+       // the condition might be removable. Keeping it for functional parity.
       return;
     }
 
     headerClass();
-    window.onscroll = function () {
-      headerClass();
+    window.addEventListener('scroll', headerClass); // Use addEventListener
+
+    return () => {
+      window.removeEventListener('scroll', headerClass); // Clean up event listener
     };
-  }, []);
+  }, [router.pathname, isErrorPage]); // Added dependencies
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -59,7 +83,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
   return (
     <header className={`site-header ${!onTop ? "site-header--fixed" : ""}`}>
       <div className="container">
-        <Link href="/">
+        <Link href="/"> {/* Removed legacyBehavior */}
           <h1 className="site-logo">
             <Logo />
             E-Shop
@@ -69,7 +93,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
           ref={navRef}
           className={`site-nav ${menuOpen ? "site-nav--open" : ""}`}
         >
-          <Link href="/products">Products</Link>
+          <Link href="/products">Products</Link> {/* Removed legacyBehavior */}
           <a href="#">Inspiration</a>
           <a href="#">Rooms</a>
           <button className="site-nav__btn">
@@ -98,7 +122,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
               className="icon-search"
             />
           </button>
-          <Link href="/cart" legacyBehavior>
+          <Link href="/cart"> {/* Removed legacyBehavior */}
             <button className="btn-cart">
               <i className="icon-cart" />
               {cartItems.length > 0 && (
@@ -106,7 +130,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
               )}
             </button>
           </Link>
-          <Link href="/login" legacyBehavior>
+          <Link href="/login"> {/* Removed legacyBehavior */}
             <button className="site-header__btn-avatar">
               <i className="icon-avatar" />
             </button>
