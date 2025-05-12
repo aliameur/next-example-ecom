@@ -1,7 +1,11 @@
 import Breadcrumb from "@/components/breadcrumb";
-import Footer from "@/components/footer";
 import ProductsContent from "@/components/products-content";
 import ProductsFilter from "@/components/products-filter";
+
+export const metadata = {
+  title: 'Products',
+  description: 'View all our products',
+};
 
 const Products = () => (
   <>
@@ -12,7 +16,6 @@ const Products = () => (
         <ProductsContent />
       </div>
     </section>
-    <Footer />
   </>
 );
 

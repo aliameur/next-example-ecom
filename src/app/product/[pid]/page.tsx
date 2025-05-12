@@ -1,78 +1,55 @@
-import type { GetServerSideProps } from "next";
-import { useState } from "react";
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-import Breadcrumb from "@/components/breadcrumb";
-import Footer from "@/components/footer";
-import Content from "@/components/product-single/content";
-import Description from "@/components/product-single/description";
-import Gallery from "@/components/product-single/gallery";
-import Reviews from "@/components/product-single/reviews";
-import ProductsFeatured from "@/components/products-featured";
-// types
-import type { ProductType } from "@/types";
+import ProductClientPage from './ProductClientPage';
+import type { ProductType } from '@/types';
 
-import { server } from "../../utils/server";
+async function getProduct(pid: string): Promise<ProductType | null> {
+  // Assuming your API route is correctly migrated to app/api/product/[pid]/route.ts
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/product/${pid}`, {
+    next: { revalidate: 3600 }, // Revalidate data every hour
+  });
 
-type ProductPageType = {
-  product: ProductType;
-};
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    // throw new Error('Failed to fetch product data');
+    // Or return null and handle notFound below
+    return null;
+  }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { pid } = query;
-  const res = await fetch(`${server}/api/product/${pid}`);
-  const product = await res.json();
+  return res.json();
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { pid: string };
+}): Promise<Metadata> {
+  const product = await getProduct(params.pid);
+
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+    };
+  }
 
   return {
-    props: {
-      product,
-    },
+    title: product.name,
+    description: product.description,
+    // Add other metadata fields as needed (e.g., openGraph, twitter)
   };
-};
+}
 
-const Product = ({ product }: ProductPageType) => {
-  const [showBlock, setShowBlock] = useState("description");
+export default async function ProductPage({
+  params,
+}: {
+  params: { pid: string };
+}) {
+  const product = await getProduct(params.pid);
 
-  return (
-    <>
-      <Breadcrumb />
+  if (!product) {
+    notFound(); // Render the not-found.tsx page
+  }
 
-      <section className="product-single">
-        <div className="container">
-          <div className="product-single__content">
-            <Gallery images={product.images} />
-            <Content product={product} />
-          </div>
-
-          <div className="product-single__info">
-            <div className="product-single__info-btns">
-              <button
-                type="button"
-                onClick={() => setShowBlock("description")}
-                className={`btn btn--rounded ${showBlock === "description" ? "btn--active" : ""}`}
-              >
-                Description
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowBlock("reviews")}
-                className={`btn btn--rounded ${showBlock === "reviews" ? "btn--active" : ""}`}
-              >
-                Reviews (2)
-              </button>
-            </div>
-
-            <Description show={showBlock === "description"} />
-            <Reviews product={product} show={showBlock === "reviews"} />
-          </div>
-        </div>
-      </section>
-
-      <div className="product-single-page">
-        <ProductsFeatured />
-      </div>
-      <Footer />
-    </>
-  );
-};
-
-export default Product;
+  return <ProductClientPage product={product} />;
+}

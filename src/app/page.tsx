@@ -1,9 +1,14 @@
-import Footer from "@/components/footer";
 import PageIntro from "@/components/page-intro";
 import ProductsFeatured from "@/components/products-featured";
 import Subscribe from "@/components/subscribe";
+import Footer from "@/components/footer";
 
-const IndexPage = () => {
+export const metadata = {
+  title: 'Home | Your Store Name',
+  description: 'Welcome to our e-commerce store!',
+};
+
+export default function Page() {
   return (
     <>
       <PageIntro />
@@ -107,6 +112,4 @@ const IndexPage = () => {
       <Footer />
     </>
   );
-};
-
-export default IndexPage;
+}
