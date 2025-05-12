@@ -37,7 +37,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
 
   useEffect(() => {
     if (typeof window === 'undefined') {
-        return; // Ensure window is available
+        return;
     }
 
     if (!arrayPaths.includes(pathname) || isErrorPage) {
@@ -52,7 +52,7 @@ const Header = ({ isErrorPage }: HeaderType) => {
     return () => {
         window.onscroll = null;
     };
-  }, [pathname, isErrorPage]);
+  }, [pathname, isErrorPage, arrayPaths]);
 
   const closeMenu = () => {
     setMenuOpen(false);

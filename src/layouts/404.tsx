@@ -1,21 +1,19 @@
 import Header from "@/components/header";
+import React from 'react';
 
 export const metadata = {
   title: 'Page not found',
 };
 
-const NotFoundPage = () => {
+const NotFoundPage = ({ children }: { children?: React.ReactNode }) => {
   return (
     <div className="app-main">
       <Header isErrorPage />
-      {/* The original component used children, which is not applicable to app router not-found.tsx.
-          The content that was likely passed as children is rendered directly here. */}
-      <main className="main-page"> {/* Removed conditional class based on pathname */}
+      <main className="main-page">
         <div className="container">
-          {/* Example content for a 404 page */}
           <h1>404 - Page Not Found</h1>
           <p>Sorry, the page you are looking for does not exist.</p>
-          {/* You might add a link back home here if desired */}
+          {children}
         </div>
       </main>
     </div>

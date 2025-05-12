@@ -2,24 +2,23 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import React from "react";
 
 import { server } from "@/utils/server";
 import { postData } from "@/utils/services";
 
 type ForgotMail = {
   email: string;
-  password?: string; // Keeping this as per original code structure, though logic seems off for 'forgot password'
+  password?: string;
 };
 
 const ForgotPassword = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<ForgotMail>();
 
   const onSubmit = async (data: ForgotMail) => {
-    // Original code posts to /api/login with email only. Keeping as is.
     await postData(`${server}/api/login`, {
       email: data.email,
     });
-    // Additional logic like showing success message would go here
   };
 
   return (
@@ -66,7 +65,6 @@ const ForgotPassword = () => {
               )}
             </div>
 
-            {/* Keeping password input as per original code, although unusual for 'forgot password' */}
             <div className="form__input-row">
               <input
                 className="form__input"
